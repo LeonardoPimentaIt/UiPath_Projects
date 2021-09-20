@@ -1,4 +1,6 @@
-RPA de Busca CNAE Seções A, B e C.
+Projeto
+
+#RPA de Busca CNAE Seções A, B e C.
 
 - RPA construído com o uso do REFramework
 
@@ -17,31 +19,47 @@ Passo a passo do RPA
     que está localizado no caminho "\Busca_De_Dados_CNAE\Data\Arquivo_De_Secoes_Para_Leitura.xlsx"
 
     No arquivo já irão constar as seções A,B e C para extração.
+#    
 
 2 - Também no estado inicial o RPA irá acessar a URL do site do IBGE. Está etapa foi construída dentro do workflow "InitAllApplications". Ele possui um Retry Scope para
     tentar o acesso ao site por 3 vezes.
+#
 
 3 - Após alimentar a fila e acessar o site no estado inicial o RPA seguirá para o estado "Get Transaction Data" onde no workflow "GetTransactionData" irá pegar cada item 
     para que seja executado dentro do processo de extração para cada seção.
+#
 
 4 - Após obter o item a ser transacionado ele irá para o Estado "Process Transaction" onde irá processar o Item, ou seja, fará a extração dos dados daquela seção.
-
+#
 Agora irei detalhar o processo desenvolvido.
-
+#
 1 - No primeiro workflow(Build_CNAE_DataTable) será criado o DataTable do CNAE, com as colunas que serão preenchidas durante o processo.
+#
 2 - No segundo workflow(Reading_Specific_Item_Content) será extraido do transaction item a informação necessária ao processo que está na variável in_TransactionItem.
+#
 3 - No terceiro workflow(Reading_Sections) ele fará a leitura das seções do site do IBGE.
+#
 4 - No quarto workflow(Accessing_Specific_Section) ele irá acessar a código da seção relacionada ao item que está sendo transacionado.
     Caso o código não seja localizado o RPA irá gerar uma business exception para o item e esta informação irá constar na fila do orchestrator.
+#
 5 - Após acessar a seção, no workflow(Reading_Division_And_Generate_TrElements), o RPA irá realizar a leitura das divisões e carregar uma variável com a quantidade total de linhas.
+#
 6 - Na etapa posterior(Acessing_Specific_Division workflow) ele irá acessar a divisão, que terá sua contagem iniciada de 1.
+#
 7 - Após acessar a seção, no workflow(Reading_Groups_And_Generate_TrElements workflow), o RPA irá realizar a leitura das divisões e carregar uma variável com a quantidade total de linhas.
+#
 8 - Na etapa posterior(Acessing_Specific_Group) ele irá acessar a divisão, que terá sua contagem iniciada de 2.
+#
 9 - Após acessar a seção, no workflow(Reading_Classes_And_Generate_TrElements workflow), o RPA irá realizar a leitura das divisões e carregar uma variável com a quantidade total de linhas.
+#
 10 - Na etapa posterior(Acessing_Specific_Class) ele irá acessar a divisão, que terá sua contagem iniciada de 3.
+#
 11 - Após acessar a seção, no workflow(Reading_Subclass_And_Generate_TrElements), o RPA irá realizar a leitura das divisões e carregar uma variável com a quantidade total de linhas.
+#
 12 - Na etapa posterior(Acessing_Specific_Subclass) ele irá acessar a divisão, que terá sua contagem iniciada de 4.
+#
 13 - Na próxima etapa(Extracting_Data), o RPA fará a extração da da tabela com os dados que precisam ser salvos no data table.
+#
 14 - Na próxima etapa(Feeding_Busca_CNAE_DataTable workflow), o RPA irá alimentar o datatable com as informações extraídas do site.
 
 OBS.: Foi desenvolvida uma lógica onde o RPA percorre toda a arvore com variaveis de controle para armazenar o total de linhas percorridas, quantos itens cada linha da arvore possui, e em qual
